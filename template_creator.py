@@ -1,22 +1,25 @@
 from jinja2 import Environment, FileSystemLoader
 
-from flask import Flask, request
+from flask import Flask, request, redirect
 
 app = Flask(__name__)
 
+test_test = 'test_test'
 
 @app.route('/', methods=['GET'])
 def home_post():
     environment = Environment(loader=FileSystemLoader("templates/"))
     template = environment.get_template("test_template.html")
 
-    return template.render(value="test_test")
+    return template.render(value=test_test)
 
 
 @app.route('/', methods=['POST'])
 def home_get():
     print('asd')
-    return request.form.get('name')
+    global test_test
+    test_test = request.form.get('name')
+    return redirect("/", code=301)
 
 
 if __name__ == "__main__":
