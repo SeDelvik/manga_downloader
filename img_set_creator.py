@@ -1,6 +1,5 @@
 from bs4 import BeautifulSoup
 
-
 def get_html(url):
     import urllib.request
     req = urllib.request.Request(
@@ -14,7 +13,8 @@ def get_html(url):
     return f.read().decode('utf-8')
 
 
-def get_chapter_list(html_doc):
+def get_chapter_list(url):
+    html_doc = get_html(url+'/vol1/1')
     soup = BeautifulSoup(html_doc, 'html.parser')
     html_block_set = soup.find_all("a", class_="chapter-link cp-l")
     url_with_content = []
@@ -23,9 +23,9 @@ def get_chapter_list(html_doc):
     return url_with_content[::-1]
 
 
-def get_img_set(html_doc):  # возможно потребуется выкинуть исключение если картинок на странице не будет
+def get_img_set(url):  # возможно потребуется выкинуть исключение если картинок на странице не будет
+    html_doc = get_html(url)
     soup = BeautifulSoup(html_doc, 'html.parser')
-    # print(soup.prettify())
     html_block_set = soup.find_all("script")
     script_source_bock = ''
     for block in html_block_set:

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+   <form action="" method="post" class="form-example">
+    <input type="submit" name="select_all" value="Выбрать все">
+  </form>
+  <form action="" method="post" class="form-example">
+    {% for elem in elements %}
+    <div>
+      <div>{{ elem[1] }}</div>
+      <div>{{ elem[0] }}</div>
+      <input type="checkbox" name={{ elem[1] }} value={{ elem[1] }} {% if select_all %} checked {% endif %}>
+    </div>
+    {% endfor %}
+    <input type="submit" name="download" value="Скачать">
+  </form>
+</body>
+</html>
