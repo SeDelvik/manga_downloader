@@ -1,7 +1,10 @@
 from bs4 import BeautifulSoup
+from reportlab.pdfgen import canvas
+from PIL import Image
+import urllib.request
+
 
 def get_html(url):
-    import urllib.request
     req = urllib.request.Request(
         url,
         data=None,
@@ -14,7 +17,7 @@ def get_html(url):
 
 
 def get_chapter_list(url):
-    html_doc = get_html(url+'/vol1/1')
+    html_doc = get_html(url + '/vol1/1')
     soup = BeautifulSoup(html_doc, 'html.parser')
     html_block_set = soup.find_all("a", class_="chapter-link cp-l")
     url_with_content = []
@@ -41,9 +44,22 @@ def get_img_set(url):  # возможно потребуется выкинут�
     return pretty_urls
 
 
+def get_pdf_file(file_name, url_image_set):
+    list_height = 842
+    list_width = 595
+    urllib.request.urlretrieve(
+        url_image_set[0],
+        "test.png")
+    pdf = canvas.Canvas(file_name)
+    img = Image.open("test.png")
+    pdf.drawImage("test.png", x=0, y=0)
+    pdf.save()
+
+
 def main():
-    print(get_img_set(get_html('')))
-    print(get_chapter_list(get_html('')))
+    # print(get_img_set(get_html('')))
+    # print(get_chapter_list(get_html('')))
+    get_pdf_file('test.pdf', ['https://staticrm.rmr.rocks/uploads/pics/01/73/395_o.jpg'])
 
 
 if __name__ == '__main__':
