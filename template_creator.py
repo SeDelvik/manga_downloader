@@ -1,9 +1,9 @@
 from jinja2 import Environment, FileSystemLoader
-from flask import Flask, request, redirect
+from flask import Flask, request, redirect, url_for
 
 from img_set_creator import *
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 
 manga_url = ''
 select_all = False
@@ -29,7 +29,7 @@ def volume_get():
     try:
         volumes_url = get_chapter_list(manga_url)
     except:
-        return redirect('/',code=301)
+        return redirect('/', code=301)
     environment = Environment(loader=FileSystemLoader("templates/"))
     template = environment.get_template("volumes.html")
     global select_all
