@@ -1,7 +1,11 @@
+import shutil
 from bs4 import BeautifulSoup
 from reportlab.pdfgen import canvas
 from PIL import Image
 import urllib.request
+import os
+
+temporary_dir = './.tmp/'
 
 
 def get_html(url):
@@ -45,21 +49,49 @@ def get_img_set(url):  # возможно потребуется выкинут�
 
 
 def get_pdf_file(file_name, url_image_set):
-    list_height = 842
-    list_width = 595
-    urllib.request.urlretrieve(
-        url_image_set[0],
-        "test.png")
-    pdf = canvas.Canvas(file_name)
-    img = Image.open("test.png")
-    pdf.drawImage("test.png", x=0, y=0)
+    if not os.path.isdir(temporary_dir):
+        os.mkdir(temporary_dir)
+    pdf = canvas.Canvas(temporary_dir + file_name)
+    for i in range(len(url_image_set)):
+        urllib.request.urlretrieve(
+            url_image_set[i],
+            temporary_dir + f"{i}.png")
+        img = Image.open(temporary_dir + f"{i}.png")
+        list_height = 595
+        list_width = 842
+        padding = 10
+        x = 0
+        y = 0
+        img_height, img_width = img.size
+        cfc_h = (list_height / img_height)
+        cfc_w = (list_width / img_width)
+
+        if cfc_h < cfc_w:
+            print('1', int(img_height * cfc_h), int(img_width * cfc_h))
+            img = img.resize((int(img_height * cfc_h) - padding * 2, int(img_width * cfc_h) - padding * 2))
+            y = int((list_width - int(img_width * cfc_h)) / 2)
+        else:
+            print('2', int(img_height * cfc_w), int(img_width * cfc_w))
+            img = img.resize((int(img_height * cfc_w) - padding * 2, int(img_width * cfc_w) - padding * 2))
+            x = int((list_height - int(img_height * cfc_w)) / 2)
+
+        img.save(temporary_dir + f"{i}.png")
+        pdf.drawImage(temporary_dir + f"{i}.png", x=x + padding, y=y + padding)
+        pdf.showPage()
     pdf.save()
+
+
+def drop_tmp_dir():
+    if os.path.isdir(temporary_dir):
+        shutil.rmtree(temporary_dir)
 
 
 def main():
     # print(get_img_set(get_html('')))
     # print(get_chapter_list(get_html('')))
-    get_pdf_file('test.pdf', ['https://staticrm.rmr.rocks/uploads/pics/01/73/395_o.jpg'])
+    gis = get_img_set('')
+    # print(gis)
+    get_pdf_file('test.pdf', gis)
 
 
 if __name__ == '__main__':
