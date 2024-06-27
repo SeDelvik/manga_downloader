@@ -40,10 +40,10 @@ def volume_get():
 
 @app.route('/volumes', methods=['POST'])
 def volume_post():
-    if request.form.get('select_all'):
-        global select_all
-        select_all = True
-        return redirect("/volumes", code=301)
+    # if request.form.get('select_all'):
+    #     global select_all
+    #     select_all = True
+    #     return redirect("/volumes", code=301)
     return redirect("/", code=301)
 
 

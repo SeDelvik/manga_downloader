@@ -163,3 +163,7 @@
 .col-36 {
     width: calc(100% / 36 * 36);
 }
+
+.button {
+    align: center
+}
