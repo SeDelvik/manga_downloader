@@ -7,24 +7,17 @@
         <link rel="stylesheet" href="static/css/main.css">
     </head>
     <body>
-        <!--<form action="" method="post" class="form-example">
-            <div class="form_grid">
-                <div class="row">
-                    <input class="col-5" type="submit" name="select_all" value="Выбрать все" onclick="select_all()">
-                </div>
-            </div>
-        </form>-->
         <form action="" method="post" class="form-example">
             <div class="form_grid">
                 <div class="row">
-                    <div class="col-5 button" onClick="select_all()">Выбрать все</div>
-                    <input class="col-5" type="submit" name="download" value="Скачать">
+                    <div class="col-4 button" id="funky_button" onClick="select_all()">Выбрать все</div>
+                    <div class="col-1"></div>
+                    <input class="col-5 button" type="submit" name="download" value="Скачать">
                 </div>
                 {% for elem in elements %}
                     <div class="row">
                         <input class="col-2" type="checkbox" name={{ elem[1] }} value={{ elem[1] }} {% if select_all %} checked {% endif %}>
                         <div class="col-3">{{ elem[1] }}</div>
-                        <div class="col-12">{{ elem[0] }}</div>
                     </div>
                 {% endfor %}
             </div>
