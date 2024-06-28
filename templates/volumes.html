@@ -16,7 +16,7 @@
                 </div>
                 {% for elem in elements %}
                     <div class="row">
-                        <input class="col-2" type="checkbox" name={{ elem[1] }} value={{ elem[1] }} {% if select_all %} checked {% endif %}>
+                        <input class="col-2" type="checkbox" name="{{ i }}_name" value="{{ elements[i][0] }}">
                         <div class="col-3">{{ elem[1] }}</div>
                     </div>
                 {% endfor %}
