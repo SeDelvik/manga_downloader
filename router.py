@@ -1,7 +1,7 @@
 from jinja2 import Environment, FileSystemLoader
 from flask import Flask, request, redirect, send_file
 
-from img_set_creator import *
+from data_file_creator import *
 
 app = Flask(__name__)
 
@@ -45,19 +45,8 @@ def volume_post():
         url = request.form.get(f'{i}_name')
         if url:
             url_arr.append(url)
-    print(url_arr)
-    archive_path = create_archive(url_arr, manga_url.split('/')[-1])
-    print('filepath', archive_path)
+    archive_path = create_content(url_arr, manga_url.split('/')[-1])
     return send_file(archive_path)
-
-
-def create_archive(url_arr, output_file_name):
-    for url_vol in url_arr:
-        img_set = get_img_set(manga_url + '/' + '/'.join(url_vol.split('/')[2:]))
-        get_pdf_file(str(url_vol.split('/')[-1]), img_set)
-    archive_path = create_zip(output_file_name)
-    drop_pdf_dir()
-    return archive_path
 
 
 if __name__ == "__main__":
