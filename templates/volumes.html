@@ -14,10 +14,10 @@
                     <div class="col-1"></div>
                     <input class="col-5 button" type="submit" name="download" value="Скачать">
                 </div>
-                {% for elem in elements %}
+                {% for i in range(elements|length) %}
                     <div class="row">
                         <input class="col-2" type="checkbox" name="{{ i }}_name" value="{{ elements[i][0] }}">
-                        <div class="col-3">{{ elem[1] }}</div>
+                        <div class="col-3">{{ elements[i][1] }}</div>
                     </div>
                 {% endfor %}
             </div>
