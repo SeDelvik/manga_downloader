@@ -9,7 +9,7 @@ abs_path_project = os.path.dirname(os.path.abspath(__file__))
 temporary_dir = os.path.join(abs_path_project, '.tmp')
 image_dir = os.path.join(temporary_dir, 'img')
 pdf_dir = os.path.join(temporary_dir, 'pdf')
-zip_dir = os.path.join(temporary_dir, 'pdf')
+zip_dir = os.path.join(temporary_dir, 'zip')
 
 
 def get_html(url: str) -> str:
@@ -81,7 +81,6 @@ def get_pdf_file(file_name: str, url_image_set: list[str]) -> str:
     :return: Абсолютный путь до созданного pdf-файла.
     """
     create_tmp_dir()
-    print(os.path.join(abs_path_project, temporary_dir))
     pdf = canvas.Canvas(os.path.join(pdf_dir, f'{file_name}.pdf'))
     for i in range(len(url_image_set)):
         abs_tmp_img_path = os.path.join(image_dir, f'{i}.png')
