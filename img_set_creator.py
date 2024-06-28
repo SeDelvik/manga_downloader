@@ -5,7 +5,11 @@ from PIL import Image
 import urllib.request
 import os
 
-temporary_dir = './.tmp/'
+abs_path_project = os.path.dirname(os.path.abspath(__file__))
+temporary_dir = os.path.join(abs_path_project, '.tmp')
+image_dir = os.path.join(temporary_dir, 'img')
+pdf_dir = os.path.join(temporary_dir, 'pdf')
+zip_dir = os.path.join(temporary_dir, 'pdf')
 
 
 def get_html(url):
@@ -49,14 +53,17 @@ def get_img_set(url):  # возможно потребуется выкинут�
 
 
 def get_pdf_file(file_name, url_image_set):
-    if not os.path.isdir(temporary_dir):
-        os.mkdir(temporary_dir)
-    pdf = canvas.Canvas(temporary_dir + file_name)
+    create_tmp_dir()
+    print(os.path.join(abs_path_project, temporary_dir))
+    pdf = canvas.Canvas(os.path.join(pdf_dir, f'{file_name}.pdf'))
     for i in range(len(url_image_set)):
+        abs_tmp_img_path = os.path.join(image_dir, f'{i}.png')
         urllib.request.urlretrieve(
             url_image_set[i],
-            temporary_dir + f"{i}.png")
-        img = Image.open(temporary_dir + f"{i}.png")
+            abs_tmp_img_path
+
+        )
+        img = Image.open(abs_tmp_img_path)
         list_height = 595
         list_width = 842
         padding = 10
@@ -67,23 +74,48 @@ def get_pdf_file(file_name, url_image_set):
         cfc_w = (list_width / img_width)
 
         if cfc_h < cfc_w:
-            print('1', int(img_height * cfc_h), int(img_width * cfc_h))
             img = img.resize((int(img_height * cfc_h) - padding * 2, int(img_width * cfc_h) - padding * 2))
             y = int((list_width - int(img_width * cfc_h)) / 2)
         else:
-            print('2', int(img_height * cfc_w), int(img_width * cfc_w))
             img = img.resize((int(img_height * cfc_w) - padding * 2, int(img_width * cfc_w) - padding * 2))
             x = int((list_height - int(img_height * cfc_w)) / 2)
 
-        img.save(temporary_dir + f"{i}.png")
-        pdf.drawImage(temporary_dir + f"{i}.png", x=x + padding, y=y + padding)
+        img.save(abs_tmp_img_path)
+        pdf.drawImage(abs_tmp_img_path, x=x + padding, y=y + padding)
         pdf.showPage()
     pdf.save()
+    drop_images_dir()
+
+
+def create_tmp_dir():
+    if not os.path.isdir(temporary_dir):
+        os.mkdir(temporary_dir)
+    if not os.path.isdir(image_dir):
+        os.mkdir(image_dir)
+    if not os.path.isdir(pdf_dir):
+        os.mkdir(pdf_dir)
+    if not os.path.isdir(zip_dir):
+        os.mkdir(zip_dir)
 
 
 def drop_tmp_dir():
     if os.path.isdir(temporary_dir):
         shutil.rmtree(temporary_dir)
+
+
+def drop_images_dir():
+    if os.path.isdir(image_dir):
+        shutil.rmtree(image_dir)
+
+
+def drop_pdf_dir():
+    if os.path.isdir(pdf_dir):
+        shutil.rmtree(pdf_dir)
+
+
+def create_zip(zip_name):
+    shutil.make_archive(os.path.join(zip_dir, zip_name), 'zip', pdf_dir)
+    return os.path.join(zip_dir, f'{zip_name}.zip')
 
 
 def main():
