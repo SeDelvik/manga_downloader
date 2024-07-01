@@ -1,9 +1,11 @@
 from jinja2 import Environment, FileSystemLoader
 from flask import Flask, request, redirect, send_file
+from flask_cors import CORS
 
 from data_file_creator import *
 
 app = Flask(__name__)
+CORS(app)
 
 manga_url = ''
 volumes_len = 0
@@ -34,7 +36,8 @@ def volume_get():
         return redirect('/', code=301)
     environment = Environment(loader=FileSystemLoader("templates/"))
     template = environment.get_template("volumes.html")
-    element = template.render(elements=volumes_url)
+    element = template.render(title_name=get_title_name(manga_url), src_img_url=get_image(manga_url),
+                              elements=volumes_url)
     return element
 
 

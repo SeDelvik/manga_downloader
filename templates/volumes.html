@@ -7,6 +7,8 @@
         <link rel="stylesheet" href="static/css/main.css">
     </head>
     <body>
+        <div>{{ title_name }}</div>
+        <div><img src=".\static\title.png"/></div>
         <form action="" method="post" class="form-example">
             <div class="form_grid">
                 <div class="row">
@@ -17,7 +19,7 @@
                 {% for i in range(elements|length) %}
                     <div class="row">
                         <input class="col-2" type="checkbox" name="{{ i }}_name" value="{{ elements[i][0] }}">
-                        <div class="col-3">{{ elements[i][1] }}</div>
+                        <div class="col-6">{{ elements[i][1] }}</div>
                     </div>
                 {% endfor %}
             </div>

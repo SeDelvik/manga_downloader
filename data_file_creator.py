@@ -11,6 +11,8 @@ image_dir = os.path.join(temporary_dir, 'img')
 pdf_dir = os.path.join(temporary_dir, 'pdf')
 zip_dir = os.path.join(temporary_dir, 'zip')
 
+static_dir = './static'
+
 
 def get_html(url: str) -> str:
     """
@@ -35,16 +37,18 @@ def get_chapter_list(url: str) -> list[list[str]]:
     :param url: Внешняя ссылка, ведущая на основной ресурс
     :return: Список с вложенными списками формата: [ссылка_на_главу, название_главы]
     """
-    html_doc = get_html(url + '/vol1/1')
+    html_doc = get_html(url + '/vol1/1?mtr=true')
     soup = BeautifulSoup(html_doc, 'html.parser')
     html_block_set = soup.find_all("a", class_="chapter-link cp-l")
+    if len(html_block_set) < 1:
+        html_block_set = soup.find_all("a", class_="chapter-link cp-l manga-mtr")
     url_with_content = []
     for elem in html_block_set:
         url_with_content.append([url + '/' + '/'.join(elem['href'].split('/')[2:]),
                                  # сборка полной внешней ссылки так как ссылка на главу приходит обрезанная
                                  elem.get_text().strip()])
-    if len(url_with_content) < 1:  # correct but not manga url
-        raise ValueError
+    # if len(url_with_content) < 1:  # correct but not manga url
+    #     raise ValueError
     return url_with_content[::-1]
 
 
@@ -68,8 +72,6 @@ def get_img_set(url: str) -> list[str]:
         tmp = raw_url.split(',')
         url = tmp[0].replace("'", '') + tmp[2].replace('"', '')
         pretty_urls.append(url)
-    if len(pretty_urls) < 1:  # correct but not manga url
-        raise ValueError
     return pretty_urls
 
 
@@ -166,19 +168,45 @@ def create_content(url_arr: list[str], output_file_name: str) -> str:
     """
     for url_vol in url_arr:
         img_set = get_img_set(url_vol)
-        get_pdf_file(str(url_vol.split('/')[-1]), img_set)
+        get_pdf_file(str(url_vol.split('/')[-1].split('?')[0]), img_set)
     shutil.make_archive(os.path.join(zip_dir, output_file_name), 'zip', pdf_dir)
     drop_pdf_dir()
     return os.path.join(zip_dir, f'{output_file_name}.zip')
 
 
+def get_image(url: str) -> str:
+    """
+    По переданному url возвращает обложку манги.
+    :param url: Внешняя ссылка на мангу
+    :return: Внутренняя ссылка на изображение
+    """
+    html_doc = get_html(url)
+    soup = BeautifulSoup(html_doc, 'html.parser')
+    div_set = soup.find_all("div", class_="picture-fotorama")
+    img_url = div_set[0].find_all("img")[0]['src']
+    path = os.path.join(static_dir, 'title.png')
+    urllib.request.urlretrieve(
+        img_url,
+        path
+    )
+    return path
+
+
+def get_title_name(url: str) -> str:
+    """
+    По переданному url возвращает название тайтла.
+    :param url: Внешняя ссылка на мангу
+    :return: Название тайтла
+    """
+    html_doc = get_html(url)
+    soup = BeautifulSoup(html_doc, 'html.parser')
+    title_dom = soup.find("title")
+    title_text = title_dom.get_text().split(")")[0].strip() + ")"
+    return title_text
+
+
 def main():
-    # print(get_img_set(get_html('')))
-    # print(get_chapter_list(get_html('')))
-    # gis = get_img_set('')
-    # # print(gis)
-    # get_pdf_file('test.pdf', gis)
-    get_chapter_list('')
+    pass
 
 
 if __name__ == '__main__':
