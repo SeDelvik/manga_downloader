@@ -13,6 +13,11 @@ zip_dir = os.path.join(temporary_dir, 'zip')
 
 static_dir = './static'
 
+user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'
+
+def setup_user_agent(ug):
+    global user_agent
+    user_agent = ug
 
 def get_html(url: str) -> str:
     """
@@ -24,7 +29,7 @@ def get_html(url: str) -> str:
         url,
         data=None,
         headers={
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'
+            'User-Agent': user_agent #'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'
         }
     )
     f = urllib.request.urlopen(req)

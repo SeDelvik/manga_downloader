@@ -21,6 +21,7 @@ def home_get():
 
 @app.route('/', methods=['POST'])
 def home_post():
+    setup_user_agent(request.headers.get('User-Agent'))
     global manga_url
     manga_url = request.form.get('url')
     return redirect("/volumes", code=301)
