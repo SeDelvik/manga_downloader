@@ -48,9 +48,12 @@ def volume_post():
         url = request.form.get(f'{i}_name')
         if url:
             url_arr.append(url)
+    if len(url_arr) == 0:
+        return ('', 204)
     archive_path = create_content(url_arr, manga_url.split('/')[-1])
     return send_file(archive_path)
 
 
 if __name__ == "__main__":
+    drop_tmp_dir()
     app.run(debug=True)
